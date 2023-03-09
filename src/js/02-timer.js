@@ -1,16 +1,15 @@
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const refs = {
-    datetimePicker = document.querySelector('#datetime-picker'),
-    startButton = document.querySelector('[data-start]'),
-    daysValue = document.querySelector('[data-days]'),
-    hoursValue = document.querySelector('[data-hours]'),
-    minutesValue = document.querySelector('[data-minutes]'),
-    secondsValue = document.querySelector('[data-seconds]'),
+    datetimePicker: document.querySelector('#datetime-picker'),
+    startButton: document.querySelector('[data-start]'),
+    daysValue: document.querySelector('[data-days]'),
+    hoursValue: document.querySelector('[data-hours]'),
+    minutesValue: document.querySelector('[data-minutes]'),
+    secondsValue: document.querySelector('[data-seconds]'),
 };
-
-
 
 flatpickr(refs.datetimePicker, {
     enableTime: true,
@@ -22,7 +21,8 @@ flatpickr(refs.datetimePicker, {
 
 
     if (selectedDate < new Date()) {
-        window.alert('Please choose a date in the future');
+        Notiflix.Notify.warning('Please choose a date in the future');
+        // window.alert('Please choose a date in the future');
         refs.startButton.disabled = true;
     } else {
         refs.startButton.disabled = false;
@@ -35,51 +35,41 @@ flatpickr(refs.datetimePicker, {
 });
 
 
+function startCountdown(selectedDate) {
 
+    const countdownInterval = setInterval(() => {
+        const currentDate = new Date();
+        const differenceInMs = Math.floor(selectedDate - currentDate);
+        const formatedDifferenceInMs = convertMs(differenceInMs);
 
-// // Запускаємо відлік часу до обраної дати
-// function startCountdown(selectedDate) {
-//     // Оновлюємо значення таймера кожну секунду
-//     const countdownInterval = setInterval(() => {
-//         const currentDate = new Date();
-//         const differenceInSeconds = Math.floor((selectedDate - currentDate) / 1000);
-//         // Перевіряємо, чи досягнуто кінцевої дати
-//         if (differenceInSeconds <= 0) {
-//             clearInterval(countdownInterval);
-//             refs.daysValue.textContent = '00';
-//             refs.hoursValue.textContent = '00';
-//             refs.minutesValue.textContent = '00';
-//             refs.secondsValue.textContent = '00';
-//         } else {
-//             const days = Math.floor(differenceInSeconds / 86400);
-//             const hours = Math.floor((differenceInSeconds % 86400) / 3600);
-//             const minutes = Math.floor((differenceInSeconds % 3600) / 60);
-//             const seconds = convertMs(differenceInSeconds)
-//             console.log(seconds, minutes)
-//             // Оновлюємо значення таймера
-//             daysValue.textContent = days.toString().padStart(2, '0');
-//             hoursValue.textContent = hours.toString().padStart(2, '0');
-//             minutesValue.textContent = minutes.toString().padStart(2, '0');
-//             secondsValue.textContent = seconds.toString().padStart(2, '0');
-//         }
-//     }, 1000);
-// };
+        if (differenceInMs <= 0) {
+            clearInterval(countdownInterval);
+            refs.daysValue.textContent = '00';
+            refs.hoursValue.textContent = '00';
+            refs.minutesValue.textContent = '00';
+            refs.secondsValue.textContent = '00';
+        } else {
+            refs.secondsValue.textContent = formatedDifferenceInMs.seconds.toString().padStart(2, '0');
+            refs.minutesValue.textContent = formatedDifferenceInMs.minutes.toString().padStart(2, '0');
+            refs.hoursValue.textContent = formatedDifferenceInMs.hours.toString().padStart(2, '0');
+            refs.daysValue.textContent = formatedDifferenceInMs.days.toString().padStart(2, '0');
+        }
+    }, 1000);
+};
 
-// function convertMs(ms) {
-//   // Number of milliseconds per unit of time
-//   const second = 1000;
-//   const minute = second * 60;
-//   const hour = minute * 60;
-//   const day = hour * 24;
+function convertMs(ms) {
+    const second = 1000;
+    const minute = second * 60;
+    const hour = minute * 60;
+    const day = hour * 24;
 
-//   // Remaining days
-//   const days = Math.floor(ms / day);
-//   // Remaining hours
-//   const hours = Math.floor((ms % day) / hour);
-//   // Remaining minutes
-//   const minutes = Math.floor(((ms % day) % hour) / minute);
-//   // Remaining seconds
-//   const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+    const days = Math.floor(ms / day);
 
-//   return { days, hours, minutes, seconds };
-// };
+    const hours = Math.floor((ms % day) / hour);
+
+    const minutes = Math.floor(((ms % day) % hour) / minute);
+
+    const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+
+    return { days, hours, minutes, seconds };
+};
