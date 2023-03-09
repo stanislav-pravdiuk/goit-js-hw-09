@@ -22,7 +22,6 @@ flatpickr(refs.datetimePicker, {
 
     if (selectedDate < new Date()) {
         Notiflix.Notify.failure('Please choose a date in the future');
-        // window.alert('Please choose a date in the future');
         refs.startButton.disabled = true;
     } else {
         refs.startButton.disabled = false;
