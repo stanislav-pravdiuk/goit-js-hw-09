@@ -5,10 +5,10 @@ const form = document.querySelector('.form');
 form.addEventListener('submit', (event) => {
   event.preventDefault();
 
-  const amount = parseInt(form.querySelector('input[name="amount"]').value);
-  const delay = parseInt(form.querySelector('input[name="delay"]').value);
-  const step = parseInt(form.querySelector('input[name="step"]').value);
-
+  const amount = parseInt(form.amount.value);
+  const delay = parseInt(form.delay.value);
+  const step = parseInt(form.step.value);
+  
   for (let i = 0; i < amount; i++) {
     const position = i + 1;
     createPromise(position, delay + (i * step))

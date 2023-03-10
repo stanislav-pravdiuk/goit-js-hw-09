@@ -16,44 +16,48 @@ flatpickr(refs.datetimePicker, {
     time_24hr: true,
     defaultDate: new Date(),
     minuteIncrement: 1,
-    onClose(selectedDates) {
-    const selectedDate = selectedDates[0];
+    onClose([selectedDates]) {
 
-
-    if (selectedDate < new Date()) {
+    if (selectedDates < new Date()) {
         Notiflix.Notify.failure('Please choose a date in the future');
         refs.startButton.disabled = true;
     } else {
         refs.startButton.disabled = false;
-
         refs.startButton.addEventListener('click', () => {
-        startCountdown(selectedDate);
+        startCountdown(selectedDates);
         });
     }
     },
 });
 
-
-function startCountdown(selectedDate) {
+function startCountdown(selectedDates) {
 
     const countdownInterval = setInterval(() => {
         const currentDate = new Date();
-        const differenceInMs = Math.floor(selectedDate - currentDate);
+        const differenceInMs = Math.floor(selectedDates - currentDate);
         const formatedDifferenceInMs = convertMs(differenceInMs);
 
         if (differenceInMs <= 0) {
             clearInterval(countdownInterval);
-            refs.daysValue.textContent = '00';
-            refs.hoursValue.textContent = '00';
-            refs.minutesValue.textContent = '00';
-            refs.secondsValue.textContent = '00';
+            resetValues();
+
         } else {
-            refs.secondsValue.textContent = formatedDifferenceInMs.seconds.toString().padStart(2, '0');
-            refs.minutesValue.textContent = formatedDifferenceInMs.minutes.toString().padStart(2, '0');
-            refs.hoursValue.textContent = formatedDifferenceInMs.hours.toString().padStart(2, '0');
-            refs.daysValue.textContent = formatedDifferenceInMs.days.toString().padStart(2, '0');
+            populateValues(formatedDifferenceInMs)
         }
     }, 1000);
+};
+function populateValues(formatedDifferenceInMs) {
+    refs.secondsValue.textContent = formatedDifferenceInMs.seconds.toString().padStart(2, '0');
+    refs.minutesValue.textContent = formatedDifferenceInMs.minutes.toString().padStart(2, '0');
+    refs.hoursValue.textContent = formatedDifferenceInMs.hours.toString().padStart(2, '0');
+    refs.daysValue.textContent = formatedDifferenceInMs.days.toString().padStart(2, '0');
+};
+
+function resetValues() {
+    refs.daysValue.textContent = '00';
+    refs.hoursValue.textContent = '00';
+    refs.minutesValue.textContent = '00';
+    refs.secondsValue.textContent = '00';
 };
 
 function convertMs(ms) {
